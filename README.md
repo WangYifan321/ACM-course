@@ -265,6 +265,18 @@ https://blog.csdn.net/doc_sgl/article/details/8880468卡特兰数经典题型
 
 
 
+# 背包
+
+```shell
+1001	Bone Collector	简单的01背包
+1002	Piggy-Bank	完全背包且必须装满
+1003	悼念512汶川大地震遇难同胞——珍惜现在，感恩生活	多重背包
+1004	Big Event in HDU	转变为01背包
+1005	寒冰王座	66.67%(16/24)
+1006	湫湫系列故事——减肥记I	64.71%(11/17)
+1007	I NEED A OFFER!	41.67%(10/24)
+1008	FATE
+```
 
 
 
@@ -272,8 +284,248 @@ https://blog.csdn.net/doc_sgl/article/details/8880468卡特兰数经典题型
 
 
 
+如果问题是背包必须装满的话可以设置dp数组的所有值为最大值或者最小值。dp[0]=0。这样如果最后dp[背包容量]还是最大或最小值就代表装不满。
+
+## 01背包
+
+```bash
+f[i][v]=max{f[i-1][v],f[i-1][v-c[i]]+w[i]}
+```
 
 
+
+>  每个物品最多只能放一次
+
+```cpp
+#include<iostream>
+#include<cstring>
+using namespace std;
+int main(){
+    int x;
+    cin>>x;
+    int v[1010],w[1010],dp[1010];
+    while(x--){
+        int n,m;
+        cin>>n>>m;
+        memset(v,0,sizeof(v)); 
+        memset(w,0,sizeof(w));
+        memset(dp,0,sizeof(dp));
+        for(int i=0;i<n;i++)
+        cin>>w[i];//输入价值
+        for(int i=0;i<n;i++)
+        cin>>v[i];//输入体积
+        for(int i=0;i<n;i++){
+            for(int j=m;j>=v[i];j--){
+                dp[j]=max(dp[j],dp[j-v[i]]+w[i]);
+            }
+        }
+
+        cout<<dp[m]<<endl;
+    }
+    return 0;
+}
+```
+
+## 完全背包
+
+> 每种物品可以放无限多次
+
+```bash
+f[i][v]=max{f[i-1][v-k*c[i]]+k*w[i]|0<=k*c[i]<=v}
+f[i][v]=max{f[i-1][v],f[i][v-c[i]]+w[i]}
+```
+
+相比于01背包，完全背包不同的是选过的物品还可以再选。
+
+```cp
+#include<iostream>
+#include<cstring>
+using namespace std;
+const int INF=0x3f3f3f3f;
+//完全背包且必须装满
+int v[10010];
+int w[10010];//硬币的面值，重量
+int dp[1001000];
+int main(){
+    int k;
+    cin>>k;
+    while(k--){
+        int a,b;
+        cin>>a>>b;
+        int ans=b-a;
+        int c;
+        cin>>c;
+
+        for(int i=0;i<c;i++){
+            cin>>v[i]>>w[i];
+        }
+        memset(dp,INF,sizeof(dp));
+        dp[0]=0;
+        for(int i=0;i<c;i++){
+            for(int j=w[i];j<=ans;j++){
+                dp[j]=min(dp[j],dp[j-w[i]]+v[i]);
+            }
+        }
+
+        if(dp[ans]!=INF){
+			printf("The minimum amount of money in the piggy-bank is %d.\n",dp[ans]);
+		}else{
+			cout<<"This is impossible."<<endl;
+		}
+
+
+    }
+
+}
+```
+
+
+
+## 多重背包
+
+> 每种物品有一个固定的次数上限
+
+```
+f[i][v]=max{f[i-1][v-k*c[i]]+k*w[i]|0<=k<=n[i]}
+
+procedure MultiplePack(cost,weight,amount)
+    if cost*amount>=V
+        CompletePack(cost,weight)
+        return
+    integer k=1
+    while k<amount
+        ZeroOnePack(k*cost,k*weight)
+        amount=amount-k
+        k=k*2
+    ZeroOnePack(amount*cost,amount*weight)
+```
+
+
+
+```cpp
+#include<iostream>
+#include<cstring>
+using namespace std;
+int main(){
+    int x;
+    cin>>x;
+    while(x--){
+        int n,m;//金额和种类
+        cin>>n>>m;
+        int p[205];//每袋的价格
+        int h[205];//每袋的重量
+        int c[205];//对应种类的大米的袋数
+        for(int i=0;i<m;i++){
+            cin>>p[i]>>h[i]>>c[i];
+        }
+        int dp[100001];
+        memset(dp,0,sizeof(dp));
+        //多重背包
+        for(int i=0;i<m;i++){
+            if(p[i]*c[i]>=n){
+                //完全背包
+                for(int j=p[i];j<=n;j++){
+                    dp[j]=max(dp[j],dp[j-p[i]]+h[i]);
+                }
+            }else{
+
+            int k=1;
+            while(k<c[i]){
+                //01背包
+                for(int j=n;j>=p[i]*k;j--){
+                    dp[j]=max(dp[j],dp[j-p[i]*k]+h[i]*k);
+                }
+                c[i]-=k;
+                k*=2;
+            }
+            //01背包
+            for(int j=n;j>=p[i]*c[i];j--){
+                dp[j]=max(dp[j],dp[j-p[i]*c[i]]+c[i]*h[i]);
+            }
+           }
+        }
+        cout<<dp[n]<<endl;
+
+    }
+}
+
+/*不用二进制优化的代码。相当于01背包
+#include <iostream>
+#include <algorithm>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+ 
+using namespace std;
+int height[505];
+int value[505];
+int dp[2000];
+int mount[505]; 
+ 
+int main()
+{
+	int T;
+	scanf("%d",&T);
+	int n,m;
+	while(T--)
+	{
+		memset(dp,0,sizeof(dp));
+		scanf("%d %d",&n,&m);
+		for(int i=0;i<m;i++)
+		{
+			scanf("%d %d %d",&height[i],&value[i],&mount[i]);
+		}
+		for(int i=0;i<n;i++)
+		{
+			for(int k=1;k<=mount[i];k++)
+			{
+				for(int j=n;j>=height[i];j--)
+				{
+					dp[j] = max(dp[j],dp[j-height[i]] + value[i]);
+				}
+			}
+		}
+		printf("%d\n",dp[n]);
+	}
+	return 0;
+}*/
+
+```
+
+
+
+
+
+
+
+## 二维费用背包
+
+> 扩展
+
+二维费用的背包问题是指：对于每件物品，具有两种不同的费用；选择这件物品必须同时付出这两种代价；对于每种代价都有 一个可付出的最大值（背包容量）。问怎样选择物品可以得到最大的价值。设这两种代价分别为代价1和代价2，第i件物品所需的两种代价分别为a[i]和 b[i]。两种代价可付出的最大值（两种背包容量）分别为V和U。物品的价值为w[i]。
+
+```
+f[i][v][u]=max{f[i-1][v][u],f[i-1][v-a[i]][u-b[i]]+w[i]}
+```
+
+
+
+
+
+
+
+## 分组背包
+
+有N件物品和一个容量为V的背包。第i件物品的费用是c[i]，价值是w[i]。这些物品被划分为若干组，每组中的物品互相冲突，最多选一件。求解将哪些物品装入背包可使这些物品的费用总和不超过背包容量，且价值总和最大。
+
+```
+f[k][v]=max{f[k-1][v],f[k-1][v-c[i]]+w[i]|物品i属于组k}
+
+for 所有的组k
+    for v=V..0
+        for 所有的i属于组k
+            f[v]=max{f[v],f[v-c[i]]+w[i]}
+```
 
 
 
