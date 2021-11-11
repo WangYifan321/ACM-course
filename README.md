@@ -519,6 +519,43 @@ for 所有的组k
 
 
 
+# bfs
+
+## 优先队列
+
+```c
+priority_queue<int, vector<int>, less<int>> pq;  // 最大堆
+等同于priority_queue<int>
+priority_queue<int, vector<int>, greater<int>> pq;  // 最小堆
+
+//排序方式
+//方法一重载()
+struct cmp{
+        bool operator()(ListNode* a, ListNode* b){
+            return a->val > b->val;
+        }
+    };
+// priority_queue自定义函数的比较与sort正好是相反的
+// 也就是说，如果你是把大于号作为第一关键字的比较方式，那么堆顶的元素就是第一关键字最小的
+    priority_queue<ListNode*, vector<ListNode*>, cmp> pq; 
+// 此时pq就按照节点的值将最小的放在堆顶
+
+
+//方法二重载<
+    struct Status{
+        int val;
+        ListNode* node;
+        bool operator < (const Status &tmp) const{ 
+        // 函数必须是静态的 使得该函数可以被 const 对象也就是常量所调用
+        // 形参可以加上const关键字和&，保证安全性，提高效率
+            return val > tmp.val;
+        }
+    };
+    priority_queue<Status> pq;  
+//重载()和重载<是两种不同的思路，前者是修改优先队列设置优先级的方式，后者是改变优
+//先队列存放的数据类型，可以根据需要选择合适的自定义排序方法。
+```
+
 
 
 
