@@ -259,16 +259,14 @@ https://blog.csdn.net/doc_sgl/article/details/8880468卡特兰数经典题型
 1001	Bone Collector	简单的01背包
 1002	Piggy-Bank	完全背包且必须装满
 1003	悼念512汶川大地震遇难同胞——珍惜现在，感恩生活	多重背包
-1004	Big Event in HDU	转变为01背包
-1005	寒冰王座	66.67%(16/24)
-1006	湫湫系列故事——减肥记I	64.71%(11/17)
-1007	I NEED A OFFER!	41.67%(10/24)
-1008	FATE
+1004	Big Event in HDU	完全背包
+1005	寒冰王座	简单的01背包
+1006	湫湫系列故事——减肥记I	多重背包
+1007	I NEED A OFFER!	   01背包变形。取大改为取小
+1008	FATE 二维背包
 ```
 
-
-
-
+> 背包的第一层循环为物品的数量，第二层为背包的所有大小
 
 
 
@@ -554,9 +552,28 @@ struct cmp{
     priority_queue<Status> pq;  
 //重载()和重载<是两种不同的思路，前者是修改优先队列设置优先级的方式，后者是改变优
 //先队列存放的数据类型，可以根据需要选择合适的自定义排序方法。
+
+方法3 利用友元函数重载<    struct Status{
+        int val;
+        ListNode* node; 
+        friend bool operator<(Status a, Status b) 
+        {
+            return a.val > b.val;
+        }
+    };
+    priority_queue<Status> pq；
 ```
 
 
+
+```shell
+	1001	A strange lift	普通dfs
+	1002	非常可乐	普通dfs
+	1003	Knight Moves	走日字的dfs
+	1004	Rescue	优先队列的dfs
+	1005	胜利大逃亡	64.71%(11/17)
+
+```
 
 
 
