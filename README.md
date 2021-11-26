@@ -583,6 +583,27 @@ struct cmp{
 
 
 
+## 素数打表
+
+>  埃氏筛 和 欧拉塞塞素数
+
+```cpp
+int flag[55],isp[55];///isp[i]是记录i是否为素数的数组
+void is_prime()///素数打表
+{
+    int k=0;
+    memset(isp,0,sizeof(isp));
+    memset(flag,0,sizeof(0));
+    for(int i=2; i<=7; i++)
+        if(!flag[i])
+            for(int j=i*i; j<=50; j+=i)
+                flag[j]=1;//标记为合数
+    for(int i=2; i<=50; i++)
+        if(!flag[i])
+            isp[i]=1;
+}
+```
+
 
 
 
