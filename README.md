@@ -579,6 +579,17 @@ struct cmp{
 
 # dfs
 
+```shell
+	1000	Tempter of the Bone	回溯，剪枝
+	1001	Safecracker	做标记，回溯
+	1002	Prime Ring Problem	dfs加点判断条件
+	1003	Robot Motion	dfs，另外弄个数组做标记，有无访问过
+	1004	猜数字	75.00%(18/24)
+	1005	Oil Deposits	遍历，遇见@递归搜索
+	1006	FatMouse and Cheese	记忆化搜索，dp
+	1007	How many ways	记忆化搜索dp
+```
+
 
 
 
@@ -606,7 +617,162 @@ void is_prime()///素数打表
 
 
 
+# 并查集
 
+## 合并（路径压缩
+
+```cpp
+int find(int x)
+{
+    if(x == fa[x])
+        return x;
+    else{
+        fa[x] = find(fa[x]);  //父节点设为根节点
+        return fa[x];         //返回父节点
+    }
+}
+//简写
+int find(int x)
+{
+    return x == fa[x] ? x : (fa[x] = find(fa[x]));
+}
+```
+
+## 按秩合并
+
+```cpp
+inline void init(int n)
+{
+    for (int i = 1; i <= n; ++i)
+    {
+        fa[i] = i;
+        rank[i] = 1;
+    }
+}
+
+inline void merge(int i, int j)
+{
+    int x = find(i), y = find(j);    //先找到两个根节点
+    if (rank[x] <= rank[y])
+        fa[x] = y;
+    else
+        fa[y] = x;
+    if (rank[x] == rank[y] && x != y)
+        rank[y]++;                   //如果深度相同且根节点不同，则新的根节点的深度+1
+}
+```
+
+```shell
+	1001	How Many Tables	简单并查集
+	1002	Is It A Tree?	入度，根节点个数，群的个数判断是否一颗树
+	1003	More is better	并查集维护的一个集合里，求元素个数最大的群
+	1004	Constructing Roads	先排序，结构体
+	1005	More is better
+	1006	畅通工程	求群的个数减一
+	1007	还是畅通工程	kruskal求最小生成树
+	1008	畅通工程再续	kruskal求最小生成树
+	1009	继续畅通工程	kruskal
+```
+
+1009:已经链接的村庄就直接合并，其他的放到一个结构体数组里，存储起始点和终点和距离就行，然后直接kruskal即可。
+
+## kruskal求最小生成树
+
+> 按边的长度从小到大排序，如果不连通就连上合并
+
+```cpp
+#include<iostream>
+#include<stdio.h>
+#include<string.h>
+#include<algorithm>
+#include<queue>
+#include<math.h>
+#include<set>
+using namespace std;
+#define INF 1e9
+typedef long long ll;
+int fa[105],n,cunt;
+struct island
+{
+    int x,y;
+}s[105];
+struct Edge
+{
+    int s,e;///s记录起点，e记录终点
+    double dis;///dis记录起点到终点的距离
+}e[5555];
+int cmp(Edge a,Edge b)
+{
+    return a.dis < b.dis;///按距离从小大大排列
+}
+int father(int x)///找父亲节点，用于判断是否在一个集合中
+{
+    if(x == fa[x]) return x;
+    else
+    {
+        int root = father(fa[x]);
+        fa[x] = root;
+        return root;
+    }
+}
+double Kruskal()
+{
+    for(int i = 1; i <= n; i++)
+        fa[i] = i;
+    sort(e,e+cunt,cmp);///按从小到大对边进行排序
+    double ans = 0;
+    int m = 0;
+    for(int i = 0; i < cunt; i++)///遍历所有边
+    {
+        int a = father(e[i].s);
+        int b = father(e[i].e);
+        if(a != b && (e[i].dis >= 10.0 && e[i].dis <= 1000))
+        {
+            ans += e[i].dis;
+            fa[a] = b;///合并集合
+            m++;
+        }
+    }
+    //cout << m << endl;
+    if(m != n-1) return -1;
+    else return ans;
+}
+double distance(int x0,int y0,int x1,int y1)
+{
+    return sqrt((x0-x1)*(x0-x1)+(y0-y1)*(y0-y1));
+}
+int main()
+{
+    int t;
+    cin >> t;
+    while(t--)
+    {
+        scanf("%d",&n);
+        for(int i = 1; i <= n; i++)
+            cin >> s[i].x >> s[i].y;
+        cunt = 0;
+        for(int i = 1; i < n; i++)
+        {
+            for(int j = i+1; j <= n; j++)
+            {
+                e[cunt].dis = distance(s[i].x,s[i].y,s[j].x,s[j].y);
+                e[cunt].s = i;
+                e[cunt].e = j;
+                cunt++;
+            }
+        }
+        double sum = Kruskal();
+        if(sum == -1) printf("oh!\n");
+        else
+        {
+            sum = sum*100;
+            printf("%.1lf\n",sum);
+        }
+    }
+ 
+    return 0;
+}
+```
 
 
 
