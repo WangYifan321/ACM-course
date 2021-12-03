@@ -1,4 +1,5 @@
 # ACM-course
+
 # 输入输出
 
 ```shell
@@ -776,9 +777,116 @@ int main()
 
 
 
+# 博弈
+
+> 能走到必败点就是必胜点，只能走到必胜点就代表下一个选手到的点是必胜点，所以当前点是必败点
+
+```
+1001	Brave Game	简单博弈，取余即可，倍数点一定是必败点
+1002	Good Luck in CET-4 Everybody!	找规律，3的倍数一定是必败点
+1003	Fibonacci again and again	肥波那次数列，求sg值，打表
+1004	Rabbit and Grass	nim游戏
+1005	Being a Good Boy in Spring Festival	求异或值，比大小即可
+1006	Public Sale	取余求必败点和必胜点
+1007	悼念512汶川大地震遇难同胞——选拔志愿者	取余即可
+1008	kiki's game	只要有偶数就是先手赢，偶数行和偶数列全为必胜点
+1009	S-Nim	异或，求sg值，打表
+```
+
+```cpp
+//挨个循环遍历，打表
+ int f[N],sg[N],hash[N];     
+ void getSG(int n)
+ {
+     int i,j;
+     memset(sg,0,sizeof(sg));
+     for(i=1;i<=n;i++)
+     {
+         memset(hash,0,sizeof(hash));
+         for(j=1;f[j]<=i;j++)
+             hash[sg[i-f[j]]]=1;
+         for(j=0;j<=n;j++)    //求mes{}中未出现的最小的非负整数
+         {
+             if(hash[j]==0)
+             {
+                 sg[i]=j;
+                 break;
+             }
+         }
+     }
+ }
+
+//记忆化dfs
+//注意 S数组要按从小到大排序 SG函数要初始化为-1 对于每个集合只需初始化1遍
+//n是集合s的大小 S[i]是定义的特殊取法规则的数组
+ int s[110],sg[10010],n;
+ int SG_dfs(int x)
+ {
+     int i;
+     if(sg[x]!=-1)
+         return sg[x];
+     bool vis[110];
+     memset(vis,0,sizeof(vis));
+     for(i=0;i<n;i++)
+     {
+         if(x>=s[i])
+         {
+             SG_dfs(x-s[i]);
+             vis[sg[x-s[i]]]=1;
+         }
+     }
+     int e;
+     for(i=0;;i++)
+         if(!vis[i])
+         {
+             e=i;
+             break;
+         }
+     return sg[x]=e;
+ }
+```
 
 
 
+
+
+## nim游戏
+
+一共有n堆，可以从一堆中取走任意数量
+
+> 对所有组的数量进行异或，0是必败点，非0是必胜点
+
+```cpp
+#include<iostream>
+#include<cstring>
+#include<algorithm>
+using namespace std;
+int main(){
+    int m;
+    while(cin>>m && m){
+        int ans=0;
+        for(int i=0;i<m;i++){
+            int n;
+            cin>>n;
+            ans^=n;
+        }
+        if(ans) cout<<"Rabbit Win!"<<endl;
+        else cout<<"Grass Win!"<<endl;
+
+    }
+    return 0;
+}
+```
+
+
+
+
+
+![博弈2](博弈2.jpg)
+
+![博弈3](博弈3.jpg)
+
+![博弈1](博弈1.jpg)
 
 
 
