@@ -4,7 +4,7 @@ int k,a[100],f[10001];
 
 int sg(int p)
 {   int i,t;
-    bool g[101]={0};    //g[]数组的用途？
+    bool g[101]={0};    //标志数组，表示当前状态往前推能到达的状态
     if(f[p]!=-1) return f[p];
     for(i=0;i<k;i++)
     {  t=p-a[i];

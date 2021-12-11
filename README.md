@@ -878,6 +878,88 @@ int main(){
 }
 ```
 
+# 二分匹配
+
+
+
+匈牙利算法
+
+## 模板
+
+```cpp
+#include<iostream>
+#include<cstring>
+#include<algorithm>
+using namespace std;
+
+//匈牙利算法
+int n,m;//左侧元素、右侧元素的数量
+int map[550][550];//邻接矩阵
+int vis[550];//记录右侧元素是否已经被访问过
+int p[550];//记录当前右侧元素所对应的左侧元素
+bool dfs(int i){
+    for(int j=1;j<=n;j++){
+        if(map[i][j] && !vis[j]){
+            vis[j]=1;
+            if(p[j]==-1 || dfs(p[j])){
+                p[j]=i;
+                return true;
+            }
+        }
+    }
+    return false;
+
+}
+
+int hungary(){
+    int res=0;
+    memset(p,-1,sizeof(p));
+    for(int i=1;i<=m;i++){
+        memset(vis,0,sizeof(vis));
+        if(dfs(i)) res++;
+    }
+    return res;
+
+
+}
+int main(){
+    int k,a,b;
+    while(cin>>k && k){
+        cin>>m>>n;
+        memset(map,0,sizeof(map));
+        while(k--){
+            cin>>a>>b;
+            map[a][b]=1;
+        }
+        cout<<hungary()<<endl;
+    }
+    return 0;
+
+}
+```
+
+**1003：**最小路径覆盖数就是用最少的点覆盖所有的路径
+
+二分图**最小路径覆盖数=二分图的结点数n-二分图的最大匹配数res**
+
+一开始图中每个节点代表一条长为0的路径，共有n条，每次在二分图中找到一条匹配的边即将两条路径合并成了一条路径，造成路径数减1，所以有几条匹配的边，路径数就少几条。
+
+1004：求最大独立集，最大独立集 = 顶点数 - 最大匹配数（最小顶点覆盖数），因为本题没有给出具体的性别，所以会造成重复现象，求出最大匹配数除以二才是实际的最大匹配数。`scanf("%d: (%d)",&a,&num);`
+
+
+
+```
+1001	过山车	模板题，套用匈牙利算法模板
+1002	Machine Schedule	转化为二部图，求配对，模板题
+1003	Air Raid	dag图，有向无环图，最小路径覆盖
+1004	Girls and Boys	求最大独立集，巧妙的输入数据，利用scanf
+1005	棋盘游戏 转化为匈牙利算法，二分匹配问题，重要点就是不能去掉的边，即影响结果的在二分图中的边
+```
+
+
+
+
+
 
 
 
