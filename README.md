@@ -972,3 +972,110 @@ int main(){
 
 
 
+
+
+# 母函数
+
+> 多项式相乘
+
+
+
+特点：排列组合，多项式相乘。一般都会是货币面值，与货币的个数，求他们的组合。还有的给资源数和资源的价值，求出能组成资源数的种类和不能的种类。
+
+![母函数](母函数.jpg)
+
+## 模板一
+
+```cpp
+#include <iostream>
+using namespace std;
+const int lmax=300;
+int c1[lmax+1],c2[lmax+1];
+int main()
+{	int n,i,j,k;
+	while (cin>>n && n!=0)
+	{	for (i=0;i<=n;i++){	
+            c1[i]=0;	
+            c2[i]=0;		
+        }
+        for(i=0;i<=n;i++){
+            c1[i]=1;
+        }
+		for (i=2;i<=n;i++)
+		{	for (j=0;j<=n;j++)
+				for (k=0;k+j<=n;k+=i)
+				{	c2[j+k]+=c1[j];	}
+			for (j=0;j<=n;j++)
+			{	c1[j]=c2[j];	c2[j]=0;	}
+		}
+		cout<<c1[n]<<endl;
+	}
+	return 0;
+}
+```
+
+
+
+
+
+## 模板二
+
+```cpp
+#include <iostream>
+using namespace std;
+const int lmax=200000;
+int c1[lmax+1],c2[lmax+1];
+int main()
+{	int n,i,j,k;
+    int value[200],num[200];
+    
+	while (cin>>n && n!=0)
+	{	
+        for(i=0;i<n;i++){
+            cin>>value[i]>>num[i];//面值和数量
+        }
+        for (i=0;i<=lmax;i++){	//初始化
+            c1[i]=0;	
+            c2[i]=0;		
+        }
+        for(i=0;i<=num[0]*value[0];i+=value[0]){
+            c1[i]=1;
+        }
+        int sum=value[0]*num[0];
+		for (i=1;i<n;i++)//n-1趟多项式相乘
+		{	for (j=0;j<=sum;j++)
+				for (k=0;k<=value[i]*num[i];k+=value[i])
+				{	c2[j+k]+=c1[j]%10000;	}//注意取余的位置，最后再取余会wrong的
+                sum+=value[i]*num[i];
+			for (j=0;j<=sum;j++)
+			{	c1[j]=c2[j]%10000;	c2[j]=0;	}
+		}
+       if(sum%3==0){
+           if(c1[sum/3]==0){
+               cout<<"sorry"<<endl;
+           }else{
+               cout<<c1[sum/3]<<endl;
+           }
+       }else{
+           cout<<"sorry"<<endl;
+       }
+        
+	}
+	return 0;
+}
+
+```
+
+
+
+```
+	1001	Ignatius and the Princess III	
+	1002	Holding Bin-Laden Captive!	
+	1003	Big Event in HDU	
+	1004	选课时间	
+	1005	Square Coins	
+	1006	Crisis of HDU
+	1007	找单词	
+	1008	The Balance
+```
+
